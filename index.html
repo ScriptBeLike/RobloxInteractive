@@ -80,7 +80,7 @@
                 <!-- Using brightness-0 invert to make the logo pure white -->
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Roblox_Logo.svg/960px-Roblox_Logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220929193725" 
                      alt="Roblox Logo" class="h-7 object-contain brightness-0 invert">
-                <span class="ml-2.5 font-extrabold text-xl tracking-wide text-white uppercase mt-0.5"> Interactive</span>
+                <span class="ml-2.5 font-extrabold text-xl tracking-wide text-white uppercase mt-0.5">Interactive</span>
             </div>
         </div>
         
@@ -351,4 +351,15 @@
                 toast.classList.remove('hidden', 'toast-exit');
                 // Force browser reflow to restart animation
                 void toast.offsetWidth;
-                toast.classList.add('toas
+                toast.classList.add('toast-exit');
+                    
+                    // Wait for exit animation to finish before hiding
+                    setTimeout(() => {
+                        toast.classList.add('hidden');
+                    }, 300);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
