@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Interactive - Transmit</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts to simulate Gotham/Creator Hub typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        roblox: {
+                            bg: '#0b0c10',
+                            surface: '#111217',
+                            surfaceHover: '#1e2029',
+                            border: '#2a2c35',
+                            text: '#f2f4f5',
+                            textMuted: '#94959b',
+                            inputBg: '#0f1014',
+                            primary: '#ffffff',
+                            primaryHover: '#e0e0e0',
+                            success: '#00b06f',
+                            buttonDark: '#22242d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Animations */
+        @keyframes slideDownFadeIn {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideUpFadeOut {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+
+        .toast-enter {
+            animation: slideDownFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .toast-exit {
+            animation: slideUpFadeOut 0.3s ease-in forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2c35;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3c45;
+        }
+    </style>
+</head>
+<body class="bg-roblox-bg text-roblox-text font-sans h-screen flex overflow-hidden antialiased">
+
+    <!-- Sidebar Navigation (Hidden on small screens) -->
+    <aside class="w-64 bg-roblox-surface border-r border-roblox-border flex-col hidden md:flex z-10">
+        <!-- Logo Area -->
+        <div class="h-16 flex items-center px-6 border-b border-roblox-border select-none">
+            <div class="flex items-center">
+                <!-- Using brightness-0 invert to make the logo pure white -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Roblox_Logo.svg/960px-Roblox_Logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220929193725" 
+                     alt="Roblox Logo" class="h-7 object-contain brightness-0 invert">
+                <span class="ml-2.5 font-extrabold text-xl tracking-wide text-white uppercase mt-0.5"> Interactive</span>
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <a href="#" class="flex items-center px-3 py-2 text-roblox-textMuted hover:bg-roblox-surfaceHover hover:text-white rounded-md transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Dashboard
+            </a>
+            <a href="#" class="flex items-center px-3 py-2 text-roblox-textMuted hover:bg-roblox-surfaceHover hover:text-white rounded-md transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Creations
+            </a>
+            <!-- Active Tab -->
+            <a href="#" class="flex items-center px-3 py-2 bg-roblox-surfaceHover text-white rounded-md transition-colors border-l-2 border-white">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                Transmit
+            </a>
+            <a href="#" class="flex items-center px-3 py-2 text-roblox-textMuted hover:bg-roblox-surfaceHover hover:text-white rounded-md transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Monetization
+            </a>
+        </nav>
+        <div class="p-4 border-t border-roblox-border">
+            <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-roblox-border overflow-hidden">
+                    <img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf3945858c706/150/150/AvatarHeadshot/Png" alt="Avatar" class="w-full h-full object-cover">
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">Creator</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        <!-- Mobile Header (Visible only on small screens) -->
+        <header class="h-16 bg-roblox-surface border-b border-roblox-border flex items-center justify-between px-4 md:hidden select-none">
+            <div class="flex items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Roblox_Logo.svg/960px-Roblox_Logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220929193725" 
+                     alt="Roblox Logo" class="h-6 object-contain brightness-0 invert">
+                <span class="ml-2 font-extrabold text-lg tracking-wide text-white uppercase mt-0.5">  Interactive</span>
+            </div>
+            <button class="text-roblox-textMuted hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </header>
+
+        <!-- Top Header for Desktop (Breadcrumbs/Status) -->
+        <header class="h-16 hidden md:flex items-center px-8 border-b border-roblox-border bg-roblox-bg">
+            <h1 class="text-xl font-semibold tracking-tight">Transmit Hub</h1>
+            <div class="ml-auto flex items-center space-x-4">
+                <span class="text-sm text-roblox-textMuted">Server Status: <span class="text-roblox-success">● Online</span></span>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Transmit Funds</h2>
+                    <p class="text-roblox-textMuted">Transfer Robux to a specific user account. The USD equivalent is automatically calculated based on current DevEx rates ($0.0035 USD/Robux).</p>
+                </div>
+
+                <!-- Main Form Card -->
+                <div class="bg-roblox-surface rounded-lg border border-roblox-border p-6 md:p-8 shadow-2xl">
+                    <form id="transmitForm" class="space-y-6">
+                        
+                        <!-- Username Input -->
+                        <div class="space-y-2">
+                            <label for="username" class="block text-sm font-medium text-roblox-textMuted uppercase tracking-wider">Target Username</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-roblox-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                </div>
+                                <input type="text" id="username" required autocomplete="off"
+                                    class="block w-full pl-10 pr-3 py-3 bg-roblox-inputBg border border-roblox-border rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white focus:border-white transition-colors" 
+                                    placeholder="Enter exact Roblox username">
+                            </div>
+                        </div>
+
+                        <!-- Robux Value Input (Icon removed, padding adjusted) -->
+                        <div class="space-y-2">
+                            <label for="robuxValue" class="block text-sm font-medium text-roblox-textMuted uppercase tracking-wider">Robux Value</label>
+                            <input type="number" id="robuxValue" required min="1" step="1" autocomplete="off"
+                                class="block w-full px-4 py-3 bg-roblox-inputBg border border-roblox-border rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white focus:border-white transition-colors" 
+                                placeholder="0">
+                        </div>
+
+                        <!-- Conversion Display -->
+                        <div class="bg-roblox-buttonDark rounded-md p-4 flex items-center justify-between border border-roblox-border">
+                            <div class="flex items-center space-x-2">
+                                <svg class="h-5 w-5 text-roblox-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="text-sm font-medium text-roblox-textMuted">Est. USD Conversion (DevEx Rate)</span>
+                            </div>
+                            <div class="text-xl font-semibold text-roblox-success" id="usdDisplay">
+                                $0.00
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="pt-4 flex justify-end space-x-4">
+                            <button type="button" class="px-6 py-2.5 rounded-md border border-roblox-border text-white hover:bg-roblox-surfaceHover transition-colors font-medium">
+                                Clear
+                            </button>
+                            <button type="submit" class="px-6 py-2.5 rounded-md bg-white text-black hover:bg-gray-200 transition-colors font-medium">
+                                Transmit Funds
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Success Toast Notification (Hidden by default) -->
+        <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 hidden opacity-0">
+            <div class="bg-[#191b22] border-l-4 border-roblox-success rounded shadow-2xl p-4 flex items-center space-x-3 min-w-[320px]">
+                <div class="bg-roblox-success/20 p-1.5 rounded-full">
+                    <svg class="h-5 w-5 text-roblox-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-white font-medium text-sm">Transmission Successful</h4>
+                    <p class="text-roblox-textMuted text-xs mt-0.5" id="toastMessage">Funds have been sent to user.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Confirmation Modal Overlay (Hidden by default) -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-roblox-surface border border-roblox-border rounded-lg shadow-2xl max-w-md w-full mx-4 transform transition-all scale-95 opacity-0" id="modalContent">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-2">Confirm Transmission</h3>
+                <p class="text-roblox-textMuted text-sm mb-6">
+                    You are about to transmit <span id="modalRobuxAmount" class="text-white font-semibold">0</span> Robux 
+                    (<span id="modalUsdAmount" class="text-roblox-success font-semibold">$0.00</span>) to the user 
+                    <span id="modalUsername" class="text-white font-semibold">User</span>. This action cannot be undone.
+                </p>
+                
+                <div class="flex justify-end space-x-3 mt-8">
+                    <button id="cancelBtn" class="px-5 py-2 rounded-md border border-roblox-border text-white hover:bg-roblox-surfaceHover transition-colors font-medium text-sm">
+                        Cancel
+                    </button>
+                    <button id="confirmBtn" class="px-5 py-2 rounded-md bg-white text-black hover:bg-gray-200 transition-colors font-medium text-sm flex items-center justify-center min-w-[100px]">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('transmitForm');
+            const usernameInput = document.getElementById('username');
+            const robuxInput = document.getElementById('robuxValue');
+            const usdDisplay = document.getElementById('usdDisplay');
+            
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+            const modalUsername = document.getElementById('modalUsername');
+            const modalRobuxAmount = document.getElementById('modalRobuxAmount');
+            const modalUsdAmount = document.getElementById('modalUsdAmount');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const clearBtn = document.querySelector('button[type="button"]');
+            
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            // Current Roblox DevEx rate (0.0035 USD per 1 Robux)
+            const DEV_EX_RATE = 0.0035;
+
+            // Handle Real-time USD Conversion
+            robuxInput.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                if (isNaN(value) || value <= 0) {
+                    usdDisplay.textContent = "$0.00";
+                    return;
+                }
+                
+                // Calculate and format to 2 decimal places
+                const usdValue = (value * DEV_EX_RATE).toFixed(2);
+                usdDisplay.textContent = `$${usdValue}`;
+            });
+
+            // Handle Form Submission (Opens Modal)
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const user = usernameInput.value.trim();
+                const amount = parseInt(robuxInput.value, 10);
+                
+                if (!user || isNaN(amount) || amount <= 0) return;
+
+                const usdValue = (amount * DEV_EX_RATE).toFixed(2);
+
+                // Populate Modal Data
+                modalUsername.textContent = user;
+                modalRobuxAmount.textContent = amount.toLocaleString();
+                modalUsdAmount.textContent = `$${usdValue}`;
+
+                // Show Modal
+                modalOverlay.classList.remove('hidden');
+                // Trigger reflow for animation
+                void modalOverlay.offsetWidth;
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            });
+
+            // Handle Modal Cancel
+            const closeModal = () => {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modalOverlay.classList.add('hidden');
+                }, 150); // wait for transition
+            };
+
+            cancelBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            // Handle Clear Button
+            clearBtn.addEventListener('click', () => {
+                form.reset();
+                usdDisplay.textContent = "$0.00";
+            });
+
+            // Handle Final Confirmation & Toast Animation
+            confirmBtn.addEventListener('click', () => {
+                const user = usernameInput.value.trim();
+                const amount = parseInt(robuxInput.value, 10).toLocaleString();
+
+                // Change button state
+                const originalText = confirmBtn.textContent;
+                confirmBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+                confirmBtn.disabled = true;
+
+                // Simulate network request
+                setTimeout(() => {
+                    closeModal();
+                    
+                    // Reset Button and Form
+                    confirmBtn.innerHTML = originalText;
+                    confirmBtn.disabled = false;
+                    form.reset();
+                    usdDisplay.textContent = "$0.00";
+
+                    // Update and Show Toast
+                    toastMessage.innerHTML = `Successfully sent <b>${amount}</b> Robux to <b>${user}</b>.`;
+                    showToast();
+                }, 800);
+            });
+
+            // Toast Notification Logic
+            let toastTimeout;
+            function showToast() {
+                // Clear any existing timeouts to prevent erratic behavior if clicked multiple times
+                clearTimeout(toastTimeout);
+                
+                toast.classList.remove('hidden', 'toast-exit');
+                // Force browser reflow to restart animation
+                void toast.offsetWidth;
+                toast.classList.add('toas
